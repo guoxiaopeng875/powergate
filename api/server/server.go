@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/filecoin-project/go-address"
@@ -608,13 +609,15 @@ func evaluateMasterAddr(conf Config, c *apistruct.FullNodeStruct) (address.Addre
 	return res, nil
 }
 func adminAuth(conf Config) grpc.UnaryServerInterceptor {
-	adminMethods := []string{
+	adminMethodPrefixes := []string{
 		"/ffs.rpc.RPCService/Create",
+		"/wallet.rpc.RPCService/",
+		"/net.rpc.RPCService/",
 	}
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		method, _ := grpc.Method(ctx)
-		for _, guarded := range adminMethods {
-			if method == guarded {
+		for _, guarded := range adminMethodPrefixes {
+			if strings.HasPrefix(method, guarded) {
 				adminToken := metautils.ExtractIncoming(ctx).Get("X-ffs-token")
 				if conf.FFSAdminToken != "" && adminToken != conf.FFSAdminToken {
 					return nil, status.Error(codes.PermissionDenied, "Method requires admin permission")
