@@ -37,7 +37,7 @@ var ffsStorageJobCmd = &cobra.Command{
 		ctx, cancel := context.WithTimeout(context.Background(), cmdTimeout)
 		defer cancel()
 
-		job, err := fcClient.FFS.GetStorageJob(authCtx(ctx), jid)
+		job, err := fcClient.FFS.GetStorageJob(mustAuthCtx(ctx), jid)
 		checkErr(err)
 		dealErrorStrings := make([]string, len(job.DealErrors))
 		for i, dealError := range job.DealErrors {

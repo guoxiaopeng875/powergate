@@ -29,9 +29,9 @@ var ffsAddrsListCmd = &cobra.Command{
 
 		s := spin.New("%s Retrieving addresses...")
 		s.Start()
-		addrs, err := fcClient.FFS.Addrs(authCtx(ctx))
+		addrs, err := fcClient.FFS.Addrs(mustAuthCtx(ctx))
 		checkErr(err)
-		defaultConfig, err := fcClient.FFS.DefaultStorageConfig(authCtx(ctx))
+		defaultConfig, err := fcClient.FFS.DefaultStorageConfig(mustAuthCtx(ctx))
 		checkErr(err)
 		s.Stop()
 
